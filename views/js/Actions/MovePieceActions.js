@@ -22,6 +22,13 @@ export function movePieceOnline(sX, sY, eX, eY, blackTime, whiteTime) {
     });
 }
 
+export function setBoard(pieces) {
+    dispatcher.dispatch({
+        type: "NEW_BOARD",
+        pieces
+    })
+}
+
 export function newGame() {
     dispatcher.dispatch({
         type: "NEW_GAME",

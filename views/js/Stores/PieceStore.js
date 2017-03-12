@@ -8,6 +8,12 @@ import * as MessageActions from "../Actions/MessageActions";
 class PieceStore extends EventEmitter {
     constructor() {
         super();
+        this.state = {};
+        this.reset();
+    }
+
+    reset() {
+        this.state = null;
         this.state = {
             white: [
                 {
@@ -205,8 +211,7 @@ class PieceStore extends EventEmitter {
                     black: true
                 },
             ]
-        }
-
+        };
     }
 
     movePiece(sX, sY, eX, eY) {
@@ -280,6 +285,19 @@ class PieceStore extends EventEmitter {
         return this.state;
     }
 
+    newBoard(pieces) {
+        this.state = pieces;
+        this.emit('refresh');
+    }
+
+    newGame() {
+        this.reset();
+        console.log(this.state);
+        this.emit('newgame');
+        this.emit('refresh');
+        console.log(this.state);
+    }
+
     handleActions(action) {
         switch(action.type) {
             case "MOVE_PIECE": {
@@ -290,6 +308,14 @@ class PieceStore extends EventEmitter {
                 if (pieceAt(action.sX, action.sY, this.state)) {
                     this.movePieceOnline(action.sX, action.sY, action.eX, action.eY, action.blackTime, action.whiteTime);
                 }
+                break;
+            }
+            case "NEW_BOARD": {
+                this.newBoard(action.pieces);
+                break;
+            }
+            case "NEW_GAME": {
+                this.newGame();
                 break;
             }
         }

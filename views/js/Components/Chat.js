@@ -21,11 +21,15 @@ export default class Chat extends React.Component {
             panel.scrollTop = panel.scrollHeight;
         });
         this.props.socket.on('newMessage', (content) => {
-            MessageActions.sendMessage(content);
+            if (content.room === this.props.room) {
+                MessageActions.sendMessage(content.newMessage);
+            }
         });
         this.props.socket.on('move', (content) => {
             //MessageActions.sendMessage(content.moved.name + " moved  to " + content.eX + " " + content.eY );
-            MessageActions.reportMovement(content.moved, content.eaten, content.sX, content.sY)
+            if (content.room == this.props.room) {
+                MessageActions.reportMovement(content.moved, content.eaten, content.sX, content.sY)
+            }
         });
     }
 
@@ -42,10 +46,10 @@ export default class Chat extends React.Component {
                 )
             } else {
                 return (
-                <div style={{fontSize: 1 + 'vw'}}>
-                    <Piece scale={scale} name={this.state.messages[i].moved.name} black={this.state.messages[i].moved.black}/>
-                    Captured <Piece scale={scale} name={this.state.messages[i].eaten.name} black={this.state.messages[i].eaten.black}/> at [{Math.abs(this.state.messages[i].moved.x + 1-8)}, {Math.abs(this.state.messages[i].moved.y + 1 - 8)}]
-                </div>
+                    <div style={{fontSize: 1 + 'vw'}}>
+                        <Piece scale={scale} name={this.state.messages[i].moved.name} black={this.state.messages[i].moved.black}/>
+                        Captured <Piece scale={scale} name={this.state.messages[i].eaten.name} black={this.state.messages[i].eaten.black}/> at [{Math.abs(this.state.messages[i].moved.x + 1-8)}, {Math.abs(this.state.messages[i].moved.y + 1 - 8)}]
+                    </div>
                 )
             }
         } catch (err) {
@@ -63,7 +67,7 @@ export default class Chat extends React.Component {
     sendMessage(e) {
         e.preventDefault();
         if (this.state.newMessage.length > 0) {
-            this.props.socket.emit('newMessage', this.state.newMessage);
+            this.props.socket.emit('newMessage', {newMessage:this.state.newMessage, room:this.props.room});
             this.state.newMessage = '';
             document.getElementById('messageField').value = '';
         }
@@ -75,8 +79,8 @@ export default class Chat extends React.Component {
             squares.push(this.renderMessage(i));
         }
         return (
-            <div style={{width: '100%', height:'80vh'}} className="container">
-                <div id="scrollablePanel" style={{width: '100%', height:'75vh', overflowY:'scroll'}} className="panel panel-default">
+            <div style={{width: '100%', height:'90vh'}} className="container">
+                <div id="scrollablePanel" style={{width: '100%', height:'83vh', overflowY:'scroll'}} className="panel panel-default">
                     <ul class="list-group">
                         {squares}
                     </ul>
