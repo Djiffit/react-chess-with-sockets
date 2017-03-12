@@ -38,6 +38,12 @@ io.on('connection', (socket) => {
     });
 });
 
+function serveIndex(req, res) {
+    res.sendFile(__dirname + '/views/index.html');
+}
+app.get('*', serveIndex);
+app.head('*', serveIndex);
+
 // Set Express routes.
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html');
