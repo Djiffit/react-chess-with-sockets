@@ -6,9 +6,11 @@ const http = require('http');
 
 const app = express();
 
+var port = process.env.PORT || 8080;
+
 console.log(http);
 // Run server to listen on port 3000.
-const server = app.listen(80, () => {
+const server = app.listen(port, () => {
     console.log('listening on *:3000');
 });
 
